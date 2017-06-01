@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="kuka_lwr_description">
+	<xacro:include filename="$(find kuka_lwr_bringup)/models/table/table_laas.urdf.xacro" />
+	<xacro:include filename="$(find kuka_lwr_description)/defs/materials.xml"/>
+	<xacro:include filename="$(find kuka_lwr_description)/urdf/kuka_lwr_arm_laas.urdf.xacro"/> <!-- POSITIONNEMENT BRAS -->
+	<kuka_lwr_arm_laas parent="table_top_link" name="right">
+          <origin xyz="0.6 0.2 1.2" rpy="0 1.5708 3.14159"/>
+        </kuka_lwr_arm_laas>
+</robot>

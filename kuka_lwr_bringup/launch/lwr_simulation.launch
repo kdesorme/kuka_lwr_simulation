@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<launch>
+
+  <!-- Set Robot model/rviz configuration path-->
+  <arg name="urdf-name"                   default="kuka_lwr_lasa.urdf.xacro"/>
+  <arg name="load-rviz"                   default="true"/>
+  <arg name="rviz-config-path"            default="$(find kuka_lwr_bringup)/rviz-config/lwr-rviz-config.rviz"/>
+  <arg name="realtime"                    default="false"/>
+
+  <!-- Load KUKA Realtime visualization. Call for load_kuka_viz which call robot_state_publisher 
+robot_state_publisher uses the URDF specified by the parameter robot_description and the joint positions from the topic joint_states to calculate the forward kinematics of the robot and publish the results via tf.
+http://wiki.ros.org/robot_state_publisher/Tutorials/Using%20the%20robot%20state%20publisher%20on%20your%20own%20robot
+ -->
+  <include file="$(find kuka_lwr_bringup)/launch/lwr_realtime.launch">
+  <!-- Override Argument to desired robot model -->
+    <arg name="realtime"                  value="$(arg realtime)"/>
+    <arg name="urdf-name"                   value="$(arg urdf-name)"/>
+    <arg name="load-rviz"                   value="$(arg load-rviz)"/>
+    <arg name="rviz-config-path"            value="$(arg rviz-config-path)"/>    
+  </include>
+
+  <!-- PR2 Loopback Controllers Controllers -->
+  <include file="$(find kuka_lwr_bringup)/launch/controllers/lwr_loopback_sim_controllers.launch"/>
+  
+  <!-- IAI Velocity Controllers -->
+  <include file="$(find kuka_lwr_bringup)/launch/controllers/lwr_sim_vel_controllers.launch"/>
+  
+  <!-- IAI Position Controllers -->
+  <include file="$(find kuka_lwr_bringup)/launch/controllers/lwr_sim_pos_controllers.launch"/>
+
+  <!-- Load LASA to IAI joint state parser -->
+  <node name="lasa_to_iai_parser" pkg="lasa_to_iai_parser" type="lasa_to_iai.py" output="screen"/>
+  
+</launch>

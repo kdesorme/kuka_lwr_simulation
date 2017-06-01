@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<launch>
+
+	<!-- Set Robot model/rviz configuration path-->
+	<arg name="urdf-name"                   default="kuka_lwr_laas.urdf.xacro"/>
+	<arg name="urdf-path"                   default="$(find kuka_lwr_description)/robots/$(arg urdf-name)"/>
+	<arg name="load-rviz"                   default="true"/>
+	<arg name="realtime"                    default="true"/>
+	<arg name="rviz-config-path"            default="$(find kuka_lwr_bringup)/rviz-config/lwr-rviz-config.rviz"/>
+
+	<!-- load up urdf to the parameter server -->
+	<arg name="default-starting-config"	default="1"/>
+	<param name="robot_description"		command="$(find xacro)/xacro.py '$(arg urdf-path)'" />  
+
+	<!-- some global variable -->
+	<param name="/use_sim_time"		value="false"/>
+
+	<include file="$(find kuka_lwr_bringup)/launch/calibration/upload_frames4calibration.launch"/> <!-- fichier à modifier pour attacher la world frame où on veut -->
+	<include file="$(find kuka_lwr_bringup)/launch/calibration/world_to_camera_tf_broadcaster_good.launch"/>
+
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+	    <param name="/use_gui" value="false"/> 
+	    <rosparam param="source_list">["/lwrc/JointState"]</rosparam>
+	</node>
+
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"></node>
+
+
+	<!-- Startup RVIZ with given config -->
+
+	<node name="rviz" pkg="rviz" type="rviz"  args="-d $(arg rviz-config-path)"  required="true" />
+</launch>
