@@ -5,10 +5,15 @@
 
   <include filename="$(find kuka_lwr_description)/defs/util_defs.xml"/>
 
-  <property name="name" value="1"/>
-  <property name="arm_velocity_scale_factor" value="right"/>
-  <macro name="kuka_lwr_arm_laas">
+  <property name="arm_velocity_scale_factor" value="1"/>
 
+  <macro name="kuka_lwr_arm_laas" params="parent name *origin">
+
+    <joint name="${parent}_${name}_arm_base_joint" type="fixed">
+      <insert_block name="origin"/>
+      <parent link="${parent}"/>
+      <child link="calib_${name}_arm_base_link"/>
+    </joint>
 
     <link name="calib_${name}_arm_base_link">
       <visual>
@@ -169,6 +174,23 @@
 
    <link name="${name}_arm_flange_link">
    </link>
+
+    <link name="${name}_writting_support_link">
+      <visual>
+        <origin xyz="0.0 0 0.01" rpy="${M_PI} 0 0"/>
+        <geometry>
+          <mesh filename="package://kuka_lwr_description/meshes/writing_support.dae" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Black"/>
+      </visual>
+    </link>
+
+   <joint name="${name}_writting_support_joint" type="fixed">
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <parent link="${name}_arm_flange_link"/>
+      <child link="${name}_writting_support_link"/>
+   </joint>
+
 
   </macro>
 
